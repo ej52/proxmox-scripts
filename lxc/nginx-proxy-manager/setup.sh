@@ -99,7 +99,7 @@ then
     -x509 \
     -subj '/O=Nginx Proxy Manager/OU=Dummy Certificate/CN=localhost' \
     -keyout /data/nginx/dummykey.pem \
-    -out /data/nginx/dummycert.pem
+    -out /data/nginx/dummycert.pem &>/dev/null
 fi
 
 # Copy app files
