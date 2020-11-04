@@ -193,6 +193,7 @@ EOF
 chmod a+x /etc/init.d/npm
 rc-update add npm boot &>/dev/null
 rc-service npm start &>/dev/null
+sleep 5
 
 # Cleanup
 info "Cleaning up..."

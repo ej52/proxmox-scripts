@@ -17,9 +17,6 @@ function error {
   fi
 
   if [ ! -z ${_ctid-} ]; then
-    if [ ! -z ${_mount+x} ]; then
-      pct unmount $_ctid &>/dev/null
-    fi
     if $(pct status $_ctid &>/dev/null); then
       if [ "$(pct status $_ctid 2>/dev/null | awk '{print $2}')" == "running" ]; then
         pct stop $_ctid &>/dev/null
@@ -175,7 +172,6 @@ _pct_options=(
   -rootfs $_rootfs,size=$_disk_size
   -storage $_storage
   -swap $_swap
-  -unprivileged 1
   -tags npm
 )
 pct create $_ctid "local:vztmpl/$_template" ${_pct_options[@]} &>/dev/null \
