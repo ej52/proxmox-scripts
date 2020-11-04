@@ -136,6 +136,10 @@ EOF
 fi
 yarn install &>/dev/null
 
+# Run setup
+export NODE_ENV=production
+node index.js &>/dev/null
+
 # Create required folders
 mkdir -p /data
 
@@ -148,7 +152,7 @@ cfgfile=/etc/nginx/nginx.conf
 app_prefix=/etc/nginx
 EOF
 rc-update add openresty boot &>/dev/null
-rc-service openresty restart &>/dev/null
+rc-service openresty stop &>/dev/null
 
 [ -f /usr/sbin/nginx ] && rm /usr/sbin/nginx
 ln -s /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
@@ -174,8 +178,7 @@ depends () {
 
 start_pre() {
   mkdir -p /tmp/nginx/body \
-  /data/letsencrypt-acme-challenge \
-  /var/log/npm
+  /data/letsencrypt-acme-challenge
 
   export NODE_ENV=production
 }
@@ -192,8 +195,11 @@ restart() {
 EOF
 chmod a+x /etc/init.d/npm
 rc-update add npm boot &>/dev/null
+
+# Start services
+info "Starting services..."
 rc-service npm start &>/dev/null
-sleep 5
+rc-service openresty start &>/dev/null
 
 # Cleanup
 info "Cleaning up..."

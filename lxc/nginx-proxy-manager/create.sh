@@ -187,10 +187,6 @@ info "Setting up LXC container..."
 pct start $_ctid
 pct exec $_ctid -- sh -c "wget --no-cache -qO - $_raw_base/setup.sh | sh"
 
-info "Rebooting LXC container..."
-pct reboot $_ctid
-sleep 3
-
 # Get network details and show completion message
 _ip=$(pct exec $_ctid -- ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
 info "Successfully created Nginx Proxy Manager LXC $_ctid."
