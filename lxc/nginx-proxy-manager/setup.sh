@@ -7,7 +7,8 @@ function info { echo -e "\e[32m[info] $*\e[39m"; }
 _temp_dir=$(mktemp -d)
 cd $_temp_dir
 
-_version_alpine=${_version_alpine:-3.12}
+. /etc/os-release
+_version_alpine=${VERSION_ID%.*}
 _version_npm=${_version_npm:-2.6.1}
 
 # add openresty repo

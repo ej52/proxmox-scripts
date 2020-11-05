@@ -22,17 +22,26 @@ curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-man
 | --hostname    | nginx-proxy-manager       | hostname of the container                              |
 | --memory      | 512                       | amount of memory                                       |
 | --storage     | local-lvm                 | storage location for container disk                    |
-| --swap        | 0                         | Amount of SWAP                                         |
+| --swap        | 0                         | amount of SWAP                                         |
 
 you can set these parameters by appending ` -- <parameter> <value>` like:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager/create.sh | bash -s -- -c 4
+curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager/create.sh | bash -s -- --cores 4
 ```
 
-## Console
+### Console
 
 There is no login required to access the console from the Proxmox web UI. If you are presented with a blank screen, press `CTRL + C` to generate a prompt.
+
+
+## Alternative Usage
+
+If you are not using proxmox or want to install this on a existing Alpine box, you can run the setup script itself.
+
+```bash
+wget --no-cache -qO - https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager/setup.sh | sh
+```
 
 ## Thanks
 
