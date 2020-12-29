@@ -9,7 +9,7 @@ cd $_temp_dir
 
 . /etc/os-release
 _version_alpine=${VERSION_ID%.*}
-_version_npm=${_version_npm:-2.6.1}
+_version_npm=${_version_npm:-2.7.1}
 
 # add openresty repo
 if [ ! -f /etc/apk/keys/admin@openresty.com-5ea678a6.rsa.pub ]; then
