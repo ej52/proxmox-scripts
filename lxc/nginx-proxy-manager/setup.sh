@@ -8,13 +8,13 @@ _temp_dir=$(mktemp -d)
 cd $_temp_dir
 
 . /etc/os-release
-_version_alpine=${VERSION_ID%.*}
-_version_npm=${_version_npm:-2.8.0}
+_alpine_version=${VERSION_ID%.*}
+_npm_url="https://github.com/jc21/nginx-proxy-manager"
 
 # add openresty repo
 if [ ! -f /etc/apk/keys/admin@openresty.com-5ea678a6.rsa.pub ]; then
   wget -q -P /etc/apk/keys/ 'http://openresty.org/package/admin@openresty.com-5ea678a6.rsa.pub' &>/dev/null
-  echo "http://openresty.org/package/alpine/v$_version_alpine/main" >> /etc/apk/repositories
+  echo "http://openresty.org/package/alpine/v$_alpine_version/main" >> /etc/apk/repositories
 fi
   
 # Update container OS
@@ -26,7 +26,7 @@ echo "fs.file-max = 65535" > /etc/sysctl.conf
 
 # Install prerequisites
 info "Installing prerequisites..."
-apk add python3 git certbot jq openresty nodejs npm yarn openssl apache2-utils &>/dev/null
+apk add curl python3 git certbot jq openresty nodejs npm yarn openssl apache2-utils &>/dev/null
 python3 -m ensurepip &>/dev/null
 
 if [ -f /etc/init.d/npm ]; then
@@ -45,11 +45,16 @@ if [ -f /etc/init.d/npm ]; then
   /var/cache/nginx &>/dev/null
 fi
 
-# Download nginx-proxy-manager source
-info "Downloading NPM v$_version_npm..."
-wget -qc https://github.com/jc21/nginx-proxy-manager/archive/v$_version_npm.tar.gz -O - | tar -xz
+# Get latest version information for nginx-proxy-manager
+_latest_release=$(wget "$_npm_url/releases/latest" -q -O - | grep -wo "jc21/.*.tar.gz")
+_latest_version=$(basename $_latest_release .tar.gz)
+_latest_version=${_latest_version#v*}
 
-cd nginx-proxy-manager-$_version_npm
+# Download nginx-proxy-manager source
+info "Downloading NPM v$_latest_version..."
+wget -qc $_npm_url/archive/v$_latest_version.tar.gz -O - | tar -xz
+
+cd nginx-proxy-manager-$_latest_version
 
 # Copy runtime files
 _rootfs=docker/rootfs
@@ -59,8 +64,8 @@ rm -f /etc/nginx/conf.d/dev.conf
 cp $_rootfs/etc/letsencrypt.ini /etc/letsencrypt.ini
 
 # Update NPM version in package.json files
-echo "`jq --arg _version_npm $_version_npm '.version=$_version_npm' backend/package.json`" > backend/package.json
-echo "`jq --arg _version_npm $_version_npm '.version=$_version_npm' frontend/package.json`" > frontend/package.json
+echo "`jq --arg _latest_version $_latest_version '.version=$_latest_version' backend/package.json`" > backend/package.json
+echo "`jq --arg _latest_version $_latest_version '.version=$_latest_version' frontend/package.json`" > frontend/package.json
 
 # Create required folders
 mkdir -p /tmp/nginx/body \
@@ -91,7 +96,7 @@ echo resolver "$(awk 'BEGIN{ORS=" "} $1=="nameserver" {print ($2 ~ ":")? "["$2"]
 # Generate dummy self-signed certificate.
 if [ ! -f /data/nginx/dummycert.pem ] || [ ! -f /data/nginx/dummykey.pem ]
 then
-  echo "Generating dummy SSL certificate..."
+  info "Generating dummy SSL certificate..."
   openssl req \
     -new \
     -newkey rsa:2048 \
@@ -204,5 +209,5 @@ rc-service openresty start &>/dev/null
 
 # Cleanup
 info "Cleaning up..."
-rm -rf $_temp_dir/nginx-proxy-manager-${_version_npm} &>/dev/null
+rm -rf $_temp_dir/nginx-proxy-manager-${_latest_version} &>/dev/null
 apk del git jq npm &>/dev/null
