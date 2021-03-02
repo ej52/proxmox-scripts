@@ -26,7 +26,7 @@ echo "fs.file-max = 65535" > /etc/sysctl.conf
 
 # Install prerequisites
 info "Installing prerequisites..."
-apk add curl python3 git certbot jq openresty nodejs npm yarn openssl apache2-utils &>/dev/null
+apk add python3 git certbot jq openresty nodejs npm yarn openssl apache2-utils &>/dev/null
 python3 -m ensurepip &>/dev/null
 
 if [ -f /etc/init.d/npm ]; then
