@@ -55,7 +55,6 @@ info "Downloading NPM v$_latest_version..."
 wget -qc $_npm_url/archive/v$_latest_version.tar.gz -O - | tar -xz
 
 cd nginx-proxy-manager-$_latest_version
-
 # Copy runtime files
 _rootfs=docker/rootfs
 mkdir -p /var/www/html && cp -r $_rootfs/var/www/html/* /var/www/html
@@ -142,10 +141,6 @@ EOF
 fi
 yarn install &>/dev/null
 
-# Run setup
-export NODE_ENV=production
-node index.js &>/dev/null
-
 # Create required folders
 mkdir -p /data
 
@@ -160,7 +155,9 @@ EOF
 rc-update add openresty boot &>/dev/null
 rc-service openresty stop &>/dev/null
 
-[ -f /usr/sbin/nginx ] && rm /usr/sbin/nginx
+if [ -f /usr/sbin/nginx ]; then
+  rm /usr/sbin/nginx
+fi
 ln -s /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
 
 # Create NPM service
@@ -205,8 +202,8 @@ rc-update add npm boot &>/dev/null
 
 # Start services
 info "Starting services..."
-rc-service npm start &>/dev/null
 rc-service openresty start &>/dev/null
+rc-service npm start &>/dev/null
 
 # Cleanup
 info "Cleaning up..."
