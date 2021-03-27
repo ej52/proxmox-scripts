@@ -184,7 +184,6 @@ start_pre() {
   /data/letsencrypt-acme-challenge
 
   export NODE_ENV=production
-  udhcpc -x hostname:$HOSTNAME
 }
 
 stop() {
