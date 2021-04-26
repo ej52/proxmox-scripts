@@ -22,6 +22,7 @@ curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-man
 | --hostname    | nginx-proxy-manager       | hostname of the container                              |
 | --memory      | 512                       | amount of memory                                       |
 | --storage     | local-lvm                 | storage location for container disk                    |
+| --templates   | local                     | storage location for templates                         |
 | --swap        | 0                         | amount of SWAP                                         |
 
 you can set these parameters by appending ` -- <parameter> <value>` like:

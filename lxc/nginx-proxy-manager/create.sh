@@ -75,6 +75,10 @@ while [[ $# -gt 0 ]]; do
       _storage=$2
       shift
       ;;
+    --storage-template)
+      __storage_template=$2
+      shift
+      ;;
     --swap)
       _swap=$2
       shift
@@ -95,6 +99,7 @@ _bridge=${_bridge:-vmbr0}
 _memory=${_memory:-512}
 _swap=${_swap:-0}
 _storage=${_storage:-local-lvm}
+_storage_template=${__storage_template:-local}
 
 # Test if ID is in use
 if pct status $_ctid &>/dev/null; then
@@ -114,6 +119,7 @@ warn "swap:     $_swap"
 warn "disksize: $_disk_size"
 warn "bridge:   $_bridge"
 warn "storage:  $_storage"
+warn "templates:  $_storage_template"
 warn ""
 warn "If you want to abort, hit ctrl+c within 10 seconds..."
 echo ""
@@ -130,7 +136,7 @@ mapfile -t _templates < <(pveam available -section system | sed -n "s/.*\($_os_t
   && error "No LXC template found for $_os_type-$_os_version"
 
 _template="${_templates[-1]}"
-pveam download local $_template &>/dev/null \
+pveam download $_storage_template $_template &>/dev/null \
   || error "A problem occured while downloading the LXC template."
 
 # Create variables for container disk
@@ -174,7 +180,7 @@ _pct_options=(
   -swap $_swap
   -tags npm
 )
-pct create $_ctid "local:vztmpl/$_template" ${_pct_options[@]} &>/dev/null \
+pct create $_ctid "$_storage_template:vztmpl/$_template" ${_pct_options[@]} &>/dev/null \
   || error "A problem occured while creating LXC container."
 
 # Set container timezone to match host
