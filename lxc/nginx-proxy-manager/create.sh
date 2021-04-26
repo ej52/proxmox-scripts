@@ -75,8 +75,8 @@ while [[ $# -gt 0 ]]; do
       _storage=$2
       shift
       ;;
-    --storage-template)
-      __storage_template=$2
+    --templates)
+      _storage_template=$2
       shift
       ;;
     --swap)
@@ -99,7 +99,7 @@ _bridge=${_bridge:-vmbr0}
 _memory=${_memory:-512}
 _swap=${_swap:-0}
 _storage=${_storage:-local-lvm}
-_storage_template=${__storage_template:-local}
+_storage_template=${_storage_template:-local}
 
 # Test if ID is in use
 if pct status $_ctid &>/dev/null; then
