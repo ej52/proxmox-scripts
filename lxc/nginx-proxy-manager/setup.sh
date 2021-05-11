@@ -46,9 +46,12 @@ if [ -f /etc/init.d/npm ]; then
 fi
 
 # Get latest version information for nginx-proxy-manager
-_latest_release=$(wget "$_npm_url/releases/latest" -q -O - | grep -wo "jc21/.*.tar.gz")
-_latest_version=$(basename $_latest_release .tar.gz)
-_latest_version=${_latest_version#v*}
+#_latest_release=$(wget "$_npm_url/releases/latest" -q -O - | grep -wo "jc21/.*.tar.gz")
+#_latest_version=$(basename $_latest_release .tar.gz)
+#_latest_version=${_latest_version#v*}
+
+# 2.8.1 is the last version that used alpine linux
+_latest_version=2.8.1
 
 # Download nginx-proxy-manager source
 info "Downloading NPM v$_latest_version..."
