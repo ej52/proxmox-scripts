@@ -42,7 +42,7 @@ trapexit() {
 
 # Check for previous install
 if [ -f /etc/init.d/npm ]; then
-  log "Stoping services"
+  log "Stopping services"
   rc-service npm stop &>/dev/null
   rc-service openresty stop &>/dev/null
   sleep 2
@@ -56,7 +56,7 @@ if [ -f /etc/init.d/npm ]; then
   /var/lib/nginx \
   /var/cache/nginx &>/dev/null
 
-  log "Removing old dependancies"
+  log "Removing old dependencies"
   apk del certbot $DEVDEPS &>/dev/null
 fi
 
@@ -85,7 +85,7 @@ runcmd apk upgrade
 echo "fs.file-max = 65535" > /etc/sysctl.conf
 
 # Install dependancies
-log "Installing dependancies"
+log "Installing dependencies"
 runcmd 'apk add python3 openresty nodejs yarn openssl apache2-utils $DEVDEPS'
 
 # Setup python env and PIP
@@ -166,7 +166,7 @@ runcmd yarn build
 cp -r dist/* /app/frontend
 cp -r app-images/* /app/frontend/images
 
-log "Initalizing backend"
+log "Initializing backend"
 rm -rf /app/config/default.json &>/dev/null
 if [ ! -f /app/config/production.json ]; then
 cat << 'EOF' > /app/config/production.json
