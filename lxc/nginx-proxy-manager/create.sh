@@ -195,7 +195,7 @@ pct exec $_ctid -- sh -c "wget --no-cache -qO - $_raw_base/setup.sh | sh"
 
 # Get network details and show completion message
 _ip=$(pct exec $_ctid -- ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
-info "Successfully created Nginx Proxy Manager LXC $_ctid."
+echo -e "\e[32m[success] Successfully created Nginx Proxy Manager LXC $_ctid.\e[39m";
 echo -e "
 
 Nginx Proxy Manager is reachable by going to the following URL.

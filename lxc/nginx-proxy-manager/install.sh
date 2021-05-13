@@ -149,7 +149,7 @@ echo resolver "$(awk 'BEGIN{ORS=" "} $1=="nameserver" {print ($2 ~ ":")? "["$2"]
 if [ ! -f /data/nginx/dummycert.pem ] || [ ! -f /data/nginx/dummykey.pem ]
 then
   log "Generating dummy SSL certificate"
-  runcmd openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 -subj '/O=Nginx Proxy Manager/OU=Dummy Certificate/CN=localhost' -keyout /data/nginx/dummykey.pem -out /data/nginx/dummycert.pem
+  runcmd 'openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 -subj "/O=Nginx Proxy Manager/OU=Dummy Certificate/CN=localhost" -keyout /data/nginx/dummykey.pem -out /data/nginx/dummycert.pem'
 fi
 
 # Copy app files
