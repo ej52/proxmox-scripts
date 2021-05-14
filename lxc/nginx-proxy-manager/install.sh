@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -euo pipefail
 
-trap trapexit EXIT EXIT SIGINT SIGTERM
+trap trapexit EXIT SIGTERM
 
 TEMPDIR=$(mktemp -d)
 TEMPLOG="$TEMPDIR/tmplog"
@@ -14,7 +14,7 @@ cd $TEMPDIR
 touch $TEMPLOG
 
 # Helpers
-log() { logs=$(cat $TEMPLOG | sed -e "s/34/32/g" | sed -e "s/info/success/g"); printf "\033c$logs\n\e[34m[info] $*\e[0m\n" | tee $TEMPLOG; }
+log() { logs=$(cat $TEMPLOG | sed -e "s/34/32/g" | sed -e "s/info/success/g"); clear && printf "\033c\e[3J$logs\n\e[34m[info] $*\e[0m\n" | tee $TEMPLOG; }
 runcmd() { 
   LASTCMD=$(grep -n "$*" "$0" | sed "s/[[:blank:]]*runcmd//");
   if [[ "$#" -eq 1 ]]; then
@@ -25,13 +25,14 @@ runcmd() {
 }
 trapexit() {
   status=$?
+  
   if [[ $status -eq 0 ]]; then
     logs=$(cat $TEMPLOG | sed -e "s/34/32/g" | sed -e "s/info/success/g")
-    printf "\033c$logs\n";
+    clear && printf "\033c\e[3J$logs\n";
   elif [[ -s $TEMPERR ]]; then
     logs=$(cat $TEMPLOG | sed -e "s/34/31/g" | sed -e "s/info/error/g")
     err=$(cat $TEMPERR | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | rev | cut -d':' -f1 | rev | cut -d' ' -f2-) 
-    printf "\033c$logs\e[33m\n$0: line $LASTCMD\n\e[33;2;3m$err\e[0m\n"
+    clear && printf "\033c\e[3J$logs\e[33m\n$0: line $LASTCMD\n\e[33;2;3m$err\e[0m\n"
   else
     printf "\e[33muncaught error occurred\n\e[0m"
   fi
