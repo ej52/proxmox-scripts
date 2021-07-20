@@ -191,15 +191,5 @@ EOF
 # Setup container
 info "Setting up LXC container..."
 pct start $_ctid
+sleep 3
 pct exec $_ctid -- sh -c "wget --no-cache -qO - $_raw_base/setup.sh | sh"
-
-# Get network details and show completion message
-_ip=$(pct exec $_ctid -- ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
-echo -e "\e[32m[success] Successfully created Nginx Proxy Manager LXC $_ctid.\e[39m";
-echo -e "
-
-Nginx Proxy Manager is reachable by going to the following URL.
-
-      http://${_ip}:81
-
-"

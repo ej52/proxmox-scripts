@@ -4,9 +4,10 @@ Many benefits can be gained by using a LXC container compared to a VM. The resou
 
 ## Usage
 
-***Note:*** _Before using this repo, make sure Proxmox is up to date._
-
 To create a new LXC container on Proxmox and setup Nginx Proxy Manager to run inside of it, run the following in a SSH connection or the Proxmox web shell.
+
+***Note:*** _tested with proxmox 6.4+_
+***Note:*** _This will create alpine container_
 
 ```bash
 curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager/create.sh | bash -s
@@ -39,6 +40,8 @@ There is no login required to access the console from the Proxmox web UI. If you
 ## Alternative Usage
 
 If you are not using proxmox or want to install this on a existing Alpine box, you can run the setup script itself.
+
+***Note:*** _Only Alpine and Ubuntu are currently supported by this script_
 
 ```bash
 wget --no-cache -qO - https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager/setup.sh | sh
