@@ -31,7 +31,7 @@ function error {
 }
 
 # Base raw github URL
-_raw_base="https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager"
+_raw_base="https://raw.githubusercontent.com/aguerrave/proxmox-scripts/main/lxc/nginx-proxy-manager"
 # Operating system
 _os_type=alpine
 _os_version=3.12
