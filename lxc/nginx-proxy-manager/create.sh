@@ -191,5 +191,5 @@ EOF
 # Setup container
 info "Setting up LXC container..."
 pct start $_ctid
-sleep 3
+sleep 5
 pct exec $_ctid -- sh -c "wget --no-cache -qO - $_raw_base/setup.sh | sh"
