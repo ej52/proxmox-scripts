@@ -82,8 +82,8 @@ runcmd pip install --no-cache-dir cffi certbot
 log "Installing openresty"
 wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
 _distro_release=$(lsb_release -sc)
-_distro_release=$(wget -t 1 -T 15 -q "http://openresty.org/package/ubuntu/dists/" -O - | grep -c "$_distro_release"  || true)
-echo "deb [trusted=yes] http://openresty.org/package/ubuntu ${_distro_repository:-focal} main" | tee /etc/apt/sources.list.d/openresty.list
+_distro_release=$(wget $WGETOPT "http://openresty.org/package/ubuntu/dists/" -O - | grep -o "$_distro_release" | head -n1 || true)
+echo "deb [trusted=yes] http://openresty.org/package/ubuntu ${_distro_release:-focal} main" | tee /etc/apt/sources.list.d/openresty.list
 runcmd apt-get update && apt-get install -y -q --no-install-recommends openresty
 
 # Install nodejs
