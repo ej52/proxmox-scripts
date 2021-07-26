@@ -80,14 +80,16 @@ runcmd pip install --no-cache-dir cffi certbot
 
 # Install openresty
 log "Installing openresty"
-runcmd wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
-echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/openresty.list
+wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
+_distro_release=$(lsb_release -sc)
+_distro_release=$(wget -t 1 -T 15 -q "http://openresty.org/package/ubuntu/dists/" -O - | grep -c "$_distro_release"  || true)
+echo "deb [trusted=yes] http://openresty.org/package/ubuntu ${_distro_repository:-focal} main" | tee /etc/apt/sources.list.d/openresty.list
 runcmd apt-get update && apt-get install -y -q --no-install-recommends openresty
 
 # Install nodejs
 log "Installing nodejs"
 runcmd wget -O - https://deb.nodesource.com/setup_14.x | bash -
-runcmd apt-get update && apt-get install -y -q --no-install-recommends nodejs
+runcmd apt-get install -y -q --no-install-recommends nodejs
 runcmd npm install --global yarn
 
 # Get latest version information for nginx-proxy-manager
