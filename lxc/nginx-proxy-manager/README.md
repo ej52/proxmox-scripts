@@ -33,7 +33,10 @@ curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-man
 ```
 
 ## Update
-Update with ```wget --no-cache -qO - https://raw.githubusercontent.com/Tropaion/proxmox-scripts/main/lxc/nginx-proxy-manager/setup.sh | sh```
+Update with 
+```bash
+wget --no-cache -qO - https://raw.githubusercontent.com/Tropaion/proxmox-scripts/main/lxc/nginx-proxy-manager/setup.sh | sh
+```
 
 ### Console
 
