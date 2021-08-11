@@ -61,38 +61,38 @@ if [ -f /lib/systemd/system/npm.service ]; then
   /var/log/nginx \
   /var/lib/nginx \
   /var/cache/nginx &>/dev/null
+else
+  # Install dependencies
+  log "Installing dependencies"
+  echo "fs.file-max = 65535" > /etc/sysctl.conf
+  runcmd apt-get update
+  runcmd apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate build-essential python3-dev git lsb-release
+
+  # Install Python
+  log "Installing python"
+  runcmd apt-get install -y -q --no-install-recommends python3 python3-pip python3-venv
+  pip3 install --upgrade setuptools
+  pip3 install --upgrade pip
+  python3 -m venv /opt/certbot/
+  if [ "$(getconf LONG_BIT)" = "32" ]; then
+    runcmd python3 -m pip install --no-cache-dir -U cryptography==3.3.2
+  fi
+  runcmd python3 -m pip install --no-cache-dir cffi certbot
+
+  # Install openresty
+  log "Installing openresty"
+  wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
+  _distro_release=$(lsb_release -sc)
+  _distro_release=$(wget $WGETOPT "http://openresty.org/package/debian/dists/" -O - | grep -o "$_distro_release" | head -n1 || true)
+  echo "deb [trusted=yes] http://openresty.org/package/debian ${_distro_release:-focal} openresty" | tee /etc/apt/sources.list.d/openresty.list
+  runcmd apt-get update && apt-get install -y -q --no-install-recommends openresty
+
+  # Install nodejs
+  log "Installing nodejs"
+  runcmd wget -O - https://deb.nodesource.com/setup_14.x | bash -
+  runcmd apt-get install -y -q --no-install-recommends nodejs
+  runcmd npm install --global yarn
 fi
-
-# Install dependencies
-log "Installing dependencies"
-echo "fs.file-max = 65535" > /etc/sysctl.conf
-runcmd apt-get update
-runcmd apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate build-essential python3-dev git lsb-release
-
-# Install Python
-log "Installing python"
-runcmd apt-get install -y -q --no-install-recommends python3 python3-pip python3-venv
-pip3 install --upgrade setuptools
-pip3 install --upgrade pip
-python3 -m venv /opt/certbot/
-if [ "$(getconf LONG_BIT)" = "32" ]; then
-  runcmd python3 -m pip install --no-cache-dir -U cryptography==3.3.2
-fi
-runcmd python3 -m pip install --no-cache-dir cffi certbot
-
-# Install openresty
-log "Installing openresty"
-wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
-_distro_release=$(lsb_release -sc)
-_distro_release=$(wget $WGETOPT "http://openresty.org/package/debian/dists/" -O - | grep -o "$_distro_release" | head -n1 || true)
-echo "deb [trusted=yes] http://openresty.org/package/debian ${_distro_release:-focal} openresty" | tee /etc/apt/sources.list.d/openresty.list
-runcmd apt-get update && apt-get install -y -q --no-install-recommends openresty
-
-# Install nodejs
-log "Installing nodejs"
-runcmd wget -O - https://deb.nodesource.com/setup_14.x | bash -
-runcmd apt-get install -y -q --no-install-recommends nodejs
-runcmd npm install --global yarn
 
 # Get latest version information for nginx-proxy-manager
 log "Checking for latest NPM release"
