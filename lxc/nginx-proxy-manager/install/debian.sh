@@ -63,7 +63,9 @@ if [ -f /lib/systemd/system/npm.service ]; then
   /var/cache/nginx &>/dev/null
   
   # Install dependencies
-  runcmd apt-get update
+  log "Installing dependencies"
+  echo "fs.file-max = 65535" > /etc/sysctl.conf
+  # runcmd apt-get update
   runcmd apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate build-essential python3-dev git lsb-release
   pip3 install --upgrade setuptools
   pip3 install --upgrade pip
