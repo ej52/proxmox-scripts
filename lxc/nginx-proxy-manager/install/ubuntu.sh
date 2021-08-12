@@ -67,6 +67,7 @@ fi
 log "Installing dependencies"
 echo "fs.file-max = 65535" > /etc/sysctl.conf
 runcmd apt-get update
+runcmd apt-get upgrade -y
 runcmd apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate build-essential python3-dev git
 
 # Install Python
@@ -74,9 +75,9 @@ log "Installing python"
 runcmd apt-get install -y -q --no-install-recommends python3 python3-pip python3-venv
 python3 -m venv /opt/certbot/
 if [ "$(getconf LONG_BIT)" = "32" ]; then
-  runcmd pip install --no-cache-dir -U cryptography==3.3.2
+  runcmd pip3 install --no-cache-dir -U cryptography==3.3.2
 fi
-runcmd pip install --no-cache-dir cffi certbot
+runcmd pip3 install --no-cache-dir cffi certbot
 
 # Install openresty
 log "Installing openresty"
@@ -105,6 +106,7 @@ cd ./nginx-proxy-manager-$_latest_version
 log "Setting up enviroment"
 # Crate required symbolic links
 ln -sf /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip
 ln -sf /usr/bin/certbot /opt/certbot/bin/certbot
 ln -sf /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
 ln -sf /usr/local/openresty/nginx/ /etc/nginx
