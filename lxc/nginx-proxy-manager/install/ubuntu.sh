@@ -229,7 +229,7 @@ log "Starting services"
 runcmd systemctl start openresty
 runcmd systemctl start npm
 
-IP=$(ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
+IP=$(hostname -I | cut -f1 -d ' ')
 log "Installation complete
 
 \e[0mNginx Proxy Manager should be reachable at the following URL.
