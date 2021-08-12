@@ -7,6 +7,7 @@ TEMPLOG="$TEMPDIR/tmplog"
 TEMPERR="$TEMPDIR/tmperr"
 LASTCMD=""
 WGETOPT="-t 1 -T 15 -q"
+DEVDEPS="build-essential python3-dev git"
 NPMURL="https://github.com/jc21/nginx-proxy-manager"
 
 cd $TEMPDIR
@@ -40,7 +41,7 @@ trapexit() {
   fi
   
   # Cleanup
-  apt-get remove --purge -y build-essential python3-dev git -qq &>/dev/null
+  apt-get remove --purge -y $DEVDEPS -qq &>/dev/null
   apt-get autoremove -y -qq &>/dev/null
   apt-get clean
   rm -rf $TEMPDIR
@@ -63,20 +64,24 @@ if [ -f /lib/systemd/system/npm.service ]; then
   /var/cache/nginx &>/dev/null
 fi
 
-# Install dependencies
-log "Installing dependencies"
+# Update container OS
+log "Updating container OS"
 echo "fs.file-max = 65535" > /etc/sysctl.conf
 runcmd apt-get update
-runcmd apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate build-essential python3-dev git
+runcmd apt-get upgrade -y
+
+# Install dependencies
+log "Installing dependencies"
+runcmd 'apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate $DEVDEPS'
 
 # Install Python
 log "Installing python"
 runcmd apt-get install -y -q --no-install-recommends python3 python3-pip python3-venv
 python3 -m venv /opt/certbot/
-if [ "$(getconf LONG_BIT)" = "32" ]; then
-  runcmd pip install --no-cache-dir -U cryptography==3.3.2
-fi
-runcmd pip install --no-cache-dir cffi certbot
+# Install certbot and python dependancies
+runcmd pip3 install --upgrade setuptools
+runcmd pip3 install --no-cache-dir -U cryptography==3.3.2
+runcmd pip3 install --no-cache-dir cffi certbot
 
 # Install openresty
 log "Installing openresty"
@@ -105,6 +110,7 @@ cd ./nginx-proxy-manager-$_latest_version
 log "Setting up enviroment"
 # Crate required symbolic links
 ln -sf /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip
 ln -sf /usr/bin/certbot /opt/certbot/bin/certbot
 ln -sf /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
 ln -sf /usr/local/openresty/nginx/ /etc/nginx
@@ -207,7 +213,7 @@ Wants=openresty.service
 [Service]
 Type=simple
 Environment=NODE_ENV=production
-ExecStartPre=-mkdir -p /tmp/nginx/body /data/letsencrypt-acme-challenge
+ExecStartPre=-/bin/mkdir -p /tmp/nginx/body /data/letsencrypt-acme-challenge
 ExecStart=/usr/bin/node index.js --abort_on_uncaught_exception --max_old_space_size=250
 WorkingDirectory=/app
 Restart=on-failure
