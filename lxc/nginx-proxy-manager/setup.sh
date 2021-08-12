@@ -19,7 +19,7 @@ wget -O "$TMP" "$URL/$DISTRO.sh"
 chmod +x "$TMP"
 
 if [ "$(command -v bash)" ]; then
-  bash "$TMP"
+  sudo bash "$TMP"
 else
   sh "$TMP"
 fi
