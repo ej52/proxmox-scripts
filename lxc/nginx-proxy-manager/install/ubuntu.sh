@@ -7,6 +7,7 @@ TEMPLOG="$TEMPDIR/tmplog"
 TEMPERR="$TEMPDIR/tmperr"
 LASTCMD=""
 WGETOPT="-t 1 -T 15 -q"
+DEVDEPS="git build-essential libffi-dev libssl-dev python3-dev"
 NPMURL="https://github.com/jc21/nginx-proxy-manager"
 
 cd $TEMPDIR
@@ -40,7 +41,7 @@ trapexit() {
   fi
   
   # Cleanup
-  apt-get remove --purge -y build-essential python3-dev git -qq &>/dev/null
+  apt-get remove --purge -y $DEVDEPS -qq &>/dev/null
   apt-get autoremove -y -qq &>/dev/null
   apt-get clean
   rm -rf $TEMPDIR
@@ -65,14 +66,18 @@ fi
 
 # Install dependencies
 log "Installing dependencies"
-echo "fs.file-max = 65535" > /etc/sysctl.conf
 runcmd apt-get update
-runcmd apt-get -y install --no-install-recommends wget gnupg openssl ca-certificates apache2-utils logrotate build-essential python3-dev git
+export DEBIAN_FRONTEND=noninteractive
+runcmd 'apt-get install -y --no-install-recommends $DEVDEPS gnupg openssl ca-certificates apache2-utils logrotate'
 
 # Install Python
 log "Installing python"
-runcmd apt-get install -y -q --no-install-recommends python3 python3-pip python3-venv
+runcmd apt-get install -y -q --no-install-recommends python3 python3-distutils python3-venv
 python3 -m venv /opt/certbot/
+export PATH=/opt/certbot/bin:$PATH
+grep -qo "/opt/certbot" /etc/environment || echo "$PATH" > /etc/environment
+# Install certbot and python dependancies
+runcmd wget -qO - https://bootstrap.pypa.io/get-pip.py | python -
 if [ "$(getconf LONG_BIT)" = "32" ]; then
   runcmd pip install --no-cache-dir -U cryptography==3.3.2
 fi
@@ -80,7 +85,7 @@ runcmd pip install --no-cache-dir cffi certbot
 
 # Install openresty
 log "Installing openresty"
-wget -O - https://openresty.org/package/pubkey.gpg | apt-key add -
+wget -qO - https://openresty.org/package/pubkey.gpg | apt-key add -
 _distro_release=$(lsb_release -sc)
 _distro_release=$(wget $WGETOPT "http://openresty.org/package/ubuntu/dists/" -O - | grep -o "$_distro_release" | head -n1 || true)
 echo "deb [trusted=yes] http://openresty.org/package/ubuntu ${_distro_release:-focal} main" | tee /etc/apt/sources.list.d/openresty.list
@@ -88,7 +93,7 @@ runcmd apt-get update && apt-get install -y -q --no-install-recommends openresty
 
 # Install nodejs
 log "Installing nodejs"
-runcmd wget -O - https://deb.nodesource.com/setup_14.x | bash -
+runcmd wget -qO - https://deb.nodesource.com/setup_14.x | bash -
 runcmd apt-get install -y -q --no-install-recommends nodejs
 runcmd npm install --global yarn
 
@@ -105,13 +110,14 @@ cd ./nginx-proxy-manager-$_latest_version
 log "Setting up enviroment"
 # Crate required symbolic links
 ln -sf /usr/bin/python3 /usr/bin/python
-ln -sf /usr/bin/certbot /opt/certbot/bin/certbot
+ln -sf /opt/certbot/bin/pip /usr/bin/pip
+ln -sf /opt/certbot/bin/certbot /usr/bin/certbot
 ln -sf /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
 ln -sf /usr/local/openresty/nginx/ /etc/nginx
 
 # Update NPM version in package.json files
-sed -i "s+0.0.0+#$_latest_version+g" backend/package.json
-sed -i "s+0.0.0+#$_latest_version+g" frontend/package.json
+sed -i "s+0.0.0+$_latest_version+g" backend/package.json
+sed -i "s+0.0.0+$_latest_version+g" frontend/package.json
 
 # Fix nginx config files for use with openresty defaults
 sed -i 's+^daemon+#daemon+g' docker/rootfs/etc/nginx/nginx.conf
@@ -207,7 +213,7 @@ Wants=openresty.service
 [Service]
 Type=simple
 Environment=NODE_ENV=production
-ExecStartPre=-mkdir -p /tmp/nginx/body /data/letsencrypt-acme-challenge
+ExecStartPre=-/bin/mkdir -p /tmp/nginx/body /data/letsencrypt-acme-challenge
 ExecStart=/usr/bin/node index.js --abort_on_uncaught_exception --max_old_space_size=250
 WorkingDirectory=/app
 Restart=on-failure
@@ -223,7 +229,7 @@ log "Starting services"
 runcmd systemctl start openresty
 runcmd systemctl start npm
 
-IP=$(ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
+IP=$(hostname -I | cut -f1 -d ' ')
 log "Installation complete
 
 \e[0mNginx Proxy Manager should be reachable at the following URL.
