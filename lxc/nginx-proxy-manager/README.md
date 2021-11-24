@@ -19,7 +19,7 @@ curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-man
 | --id          | $nextid                   | container id                                           |
 | --bridge      | vmbr0                     | bridge used for eth0                                   |
 | --cores       | 1                         | number of cpu cores                                    |
-| --disksize    | 2GB                       | size of disk                                           |
+| --disksize    | 2G                        | size of disk                                           |
 | --hostname    | nginx-proxy-manager       | hostname of the container                              |
 | --memory      | 512                       | amount of memory                                       |
 | --storage     | local-lvm                 | storage location for container disk                    |
