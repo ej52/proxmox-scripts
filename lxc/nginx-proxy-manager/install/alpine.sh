@@ -89,7 +89,7 @@ runcmd apk upgrade
 
 # Install dependancies
 log "Installing dependencies"
-runcmd 'apk add python3 openresty nodejs yarn openssl apache2-utils logrotate $DEVDEPS'
+runcmd 'apk add python3 py3-pip openresty nodejs yarn openssl apache2-utils logrotate $DEVDEPS'
 
 # Setup python env and PIP
 log "Setting up python"
