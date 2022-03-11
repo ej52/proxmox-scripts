@@ -142,7 +142,7 @@ pveam download $_storage_template $_template &>/dev/null \
 # Create variables for container disk
 _storage_type=$(pvesm status -storage $_storage 2>/dev/null | awk 'NR>1 {print $2}')
 case $_storage_type in
-  dir|nfs)
+  btrfs|dir|nfs)
     _disk_ext=".raw"
     _disk_ref="$_ctid/"
     ;;
