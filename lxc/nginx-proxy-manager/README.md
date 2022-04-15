@@ -10,7 +10,7 @@ To create a new LXC container on Proxmox and setup Nginx Proxy Manager to run in
 ***Note:*** _This will create alpine container_
 
 ```bash
-curl -sL https://raw.githubusercontent.com/BShurilla/proxmox-scripts/main/lxc/nginx-proxy-manager/create.sh | bash -s
+curl -sL https://raw.githubusercontent.com/ej52/proxmox-scripts/main/lxc/nginx-proxy-manager/create.sh | bash -s
 ```
 
 ### Command line arguments
