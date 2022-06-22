@@ -138,6 +138,7 @@ cp -r docker/rootfs/var/www/html/* /var/www/html/
 cp -r docker/rootfs/etc/nginx/* /etc/nginx/
 cp docker/rootfs/etc/letsencrypt.ini /etc/letsencrypt.ini
 cp docker/rootfs/etc/logrotate.d/nginx-proxy-manager /etc/logrotate.d/nginx-proxy-manager
+mkdir /etc/nginx/conf
 ln -sf /etc/nginx/nginx.conf /etc/nginx/conf/nginx.conf
 rm -f /etc/nginx/conf.d/dev.conf
 
