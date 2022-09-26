@@ -14,11 +14,11 @@ cd $TEMPDIR
 touch $TEMPLOG
 
 # Helpers
-log() { 
-  logs=$(cat $TEMPLOG | sed -e "s/34/32/g" | sed -e "s/info/success/g"); 
-  clear && printf "\033c\e[3J$logs\n\e[34m[info] $*\e[0m\n" | tee $TEMPLOG; 
+log() {
+  logs=$(cat $TEMPLOG | sed -e "s/34/32/g" | sed -e "s/info/success/g");
+  clear && printf "\033c\e[3J$logs\n\e[34m[info] $*\e[0m\n" | tee $TEMPLOG;
 }
-runcmd() { 
+runcmd() {
   LASTCMD=$(grep -n "$*" "$0" | sed "s/[[:blank:]]*runcmd//");
   if [[ "$#" -eq 1 ]]; then
     eval "$@" 2>$TEMPERR;
@@ -28,13 +28,13 @@ runcmd() {
 }
 trapexit() {
   status=$?
-  
+
   if [[ $status -eq 0 ]]; then
     logs=$(cat $TEMPLOG | sed -e "s/34/32/g" | sed -e "s/info/success/g")
     clear && printf "\033c\e[3J$logs\n";
   elif [[ -s $TEMPERR ]]; then
     logs=$(cat $TEMPLOG | sed -e "s/34/31/g" | sed -e "s/info/error/g")
-    err=$(cat $TEMPERR | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | rev | cut -d':' -f1 | rev | cut -d' ' -f2-) 
+    err=$(cat $TEMPERR | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g' | rev | cut -d':' -f1 | rev | cut -d' ' -f2-)
     clear && printf "\033c\e[3J$logs\e[33m\n$0: line $LASTCMD\n\e[33;2;3m$err\e[0m\n"
   else
     printf "\e[33muncaught error occurred\n\e[0m"
@@ -78,7 +78,7 @@ _repository_version=$(printf "$_repository_version\n$_alpine_version" | sort -V 
 _repository="http://openresty.org/package/alpine/v$_repository_version/main"
 
 # Update/Insert openresty repository
-grep -q 'openresty.org' /etc/apk/repositories && 
+grep -q 'openresty.org' /etc/apk/repositories &&
   sed -i "/openresty.org/c\\$_repository/" /etc/apk/repositories || echo $_repository >> /etc/apk/repositories
 
 # Update container OS
@@ -102,7 +102,7 @@ runcmd pip3 install --no-cache-dir cffi certbot
 log "Checking for latest NPM release"
 # Get latest version information for nginx-proxy-manager
 runcmd 'wget $WGETOPT -O ./_latest_release $NPMURL/releases/latest'
-_latest_version=$(basename $(cat ./_latest_release | grep -wo "NginxProxyManager/.*.tar.gz") .tar.gz | cut -d'v' -f2)
+_latest_version=$(basename $(cat ./_latest_release | grep -wo "expanded_assets/v.*\d") | cut -d'v' -f2)
 
 # Download nginx-proxy-manager source
 log "Downloading NPM v$_latest_version"
@@ -210,7 +210,7 @@ cat << 'EOF' > /etc/init.d/npm
 #!/sbin/openrc-run
 description="Nginx Proxy Manager"
 
-command="/usr/bin/node" 
+command="/usr/bin/node"
 command_args="index.js --abort_on_uncaught_exception --max_old_space_size=250"
 command_background="yes"
 directory="/app"
