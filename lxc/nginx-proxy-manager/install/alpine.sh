@@ -89,7 +89,7 @@ runcmd apk upgrade
 
 # Install dependancies
 log "Installing dependencies"
-runcmd 'apk add python3 openresty nodejs yarn openssl apache2-utils logrotate nginx-mod-stream-geoip nginx-mod-http-geoip $DEVDEPS'
+runcmd 'apk add python3 openresty nodejs yarn openssl apache2-utils logrotate nginx-mod-stream-geoip2 nginx-mod-http-geoip2 $DEVDEPS'
 
 # Setup python env and PIP
 log "Setting up python"
