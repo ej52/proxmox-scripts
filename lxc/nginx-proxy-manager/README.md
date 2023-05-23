@@ -19,7 +19,7 @@ curl -sL https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-man
 | --id          | $nextid                   | container id                                           |
 | --bridge      | vmbr0                     | bridge used for eth0                                   |
 | --cores       | 1                         | number of cpu cores                                    |
-| --disksize    | 2G                        | size of disk                                           |
+| --disksize    | 4G                        | size of disk                                           |
 | --hostname    | nginx-proxy-manager       | hostname of the container                              |
 | --memory      | 512                       | amount of memory                                       |
 | --storage     | local-lvm                 | storage location for container disk                    |
@@ -42,6 +42,7 @@ There is no login required to access the console from the Proxmox web UI. If you
 If you are not using proxmox or want to install this on a existing Alpine box, you can run the setup script itself.
 
 ***Note:*** _Only Alpine, Debian and Ubuntu are currently supported by this script_
+***Note:*** _requires a user 'npm', please create before executing the script_
 
 ```bash
 wget --no-cache -qO - https://raw.githubusercontent.com/ej52/proxmox/main/lxc/nginx-proxy-manager/setup.sh | sh
