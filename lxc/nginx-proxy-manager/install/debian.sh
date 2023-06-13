@@ -208,6 +208,9 @@ cd /app
 export NODE_ENV=development
 runcmd yarn install --network-timeout=30000
 
+sudo sed -i 's/^pid/# pid/' /usr/local/openresty/nginx/conf/nginx.conf
+sudo sed -i 's/^user npm/user root/' /usr/local/openresty/nginx/conf/nginx.conf
+
 # Create NPM service
 log "Creating NPM service"
 cat << 'EOF' > /lib/systemd/system/npm.service
