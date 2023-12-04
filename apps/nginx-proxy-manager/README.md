@@ -2,7 +2,7 @@
 
 ## Usage
 
-To create a Proxmox container please follow the main [README](https://raw.githubusercontent.com/ej52/proxmox/main/README.md)
+To create a Proxmox container please follow the main [README](https://github.com/ej52/proxmox-scripts/tree/main)
 
 ```sh
 sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/ej52/proxmox/main/install.sh)" -s --app nginx-proxy-manager
