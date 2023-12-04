@@ -15,7 +15,7 @@ bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/ej52/proxmox/m
 ### Command line arguments
 | argument           | default              | description                                            |
 |--------------------|----------------------|--------------------------------------------------------|
-| --app         | nginx-proxy-manager       | application to install                                 |
+| --app         | none                      | application to install                                 |
 | --id          | $nextid                   | container id                                           |
 | --os          | alpine                    | OS distribution to install                             |
 | --os-version  | latest                    | OS version to install                                  |
@@ -52,7 +52,7 @@ sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/ej52/proxmox/mai
 ### Command line arguments
 | argument           | default              | description                                            |
 |--------------------|----------------------|--------------------------------------------------------|
-| --app         | nginx-proxy-manager       | application to install                                 |
+| --app         | none                      | application to install                                 |
 | --cleanup     | false                     | Remove dev dependencies after install                  |
 
 ## Applications

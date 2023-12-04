@@ -53,7 +53,7 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-EPS_APP_NAME=${EPS_APP_NAME:-nginx-proxy-manager}
+EPS_APP_NAME=${EPS_APP_NAME:-}
 if [ -z "$EPS_APP_NAME" ]; then
   log "error" "No application provided" "" 1
 fi
