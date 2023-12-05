@@ -17,9 +17,12 @@ source <(wget --no-cache -qO- ${EPS_BASE_URL}/utils/${EPS_OS_DISTRO}.sh)
 
 pms_bootstrap
 pms_settraps
+
 if [ $EPS_CT_INSTALL = false ]; then
   pms_header
 fi
+
+pms_check_os
 
 EPS_OS_ARCH=$(os_arch)
 EPS_OS_CODENAME=$(os_codename)
