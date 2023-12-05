@@ -43,7 +43,7 @@ if [ $? -gt 0 ]; then
   log_error "No install script found for ${CLR_CYB}$EPS_APP_NAME${CLR}"
 fi
 
-EPS_OS_NAME=$(uname)
+export EPS_OS_NAME=$(uname)
 export EPS_OS_DISTRO=$(awk -F'=' '/^ID=/{ print $NF }' /etc/os-release)
 
 if [ "$EPS_OS_NAME" != "Linux" ]; then
