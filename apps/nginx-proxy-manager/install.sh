@@ -50,7 +50,7 @@ step_start "Operating System" "Updating" "Updated"
 
 step_start "Dependencies" "Installing" "Installed"
   # Remove potential conflicting depenedencies
-  pkg_del nodejs npm yarn *certbot rust* cargo*
+  pkg_del nginx nodejs npm yarn *certbot rust* cargo*
   # Install required depenedencies
   pkg_add ca-certificates gnupg openssl apache2-utils logrotate $EPS_DEPENDENCIES
 

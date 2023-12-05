@@ -1,5 +1,7 @@
 # Nginx Proxy Manager install script
 
+***Note:*** _As [Nginx Proxy Manager](https://nginxproxymanager.com/) uses openresty, nginx will be removed from the OS as it will conflict with openresty_
+
 ## Usage
 
 To create a Proxmox container please follow the main [README](https://github.com/ej52/proxmox-scripts)
