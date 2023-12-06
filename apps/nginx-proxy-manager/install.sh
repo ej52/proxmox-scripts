@@ -13,7 +13,11 @@ fi
 
 source <(echo -n "$EPS_UTILS")
 source <(echo -n "$EPS_APP_CONFIG")
-source <(wget --no-cache -qO- ${EPS_BASE_URL}/utils/${EPS_OS_DISTRO}.sh)
+if [ "$EPS_OS_DISTRO" = "alpine" ]; then
+  source <(wget --no-cache -qO- ${EPS_BASE_URL}/utils/alpine.sh)
+else
+  source <(wget --no-cache -qO- ${EPS_BASE_URL}/utils/debian.sh)
+fi
 
 pms_bootstrap
 pms_settraps
