@@ -21,7 +21,7 @@ bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/ej52/proxmox/m
 | --os-version  | latest                    | OS version to install                                  |
 | --bridge      | vmbr0                     | bridge used for eth0                                   |
 | --cores       | 1                         | number of cpu cores                                    |
-| --disksize    | 4G                        | size of disk                                           |
+| --disksize    | 4                         | size of disk in GB                                     |
 | --hostname    | value of --app            | hostname of the container                              |
 | --memory      | 512                       | amount of memory                                       |
 | --storage     | local-lvm                 | storage location for container disk                    |
