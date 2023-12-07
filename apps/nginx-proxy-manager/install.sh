@@ -1,23 +1,20 @@
 #!/usr/bin/env bash
 EPS_BASE_URL=${EPS_BASE_URL:-}
 EPS_OS_DISTRO=${EPS_OS_DISTRO:-}
-EPS_UTILS=${EPS_UTILS:-}
+EPS_UTILS_COMMON=${EPS_UTILS_COMMON:-}
+EPS_UTILS_DISTRO=${EPS_UTILS_DISTRO:-}
 EPS_APP_CONFIG=${EPS_APP_CONFIG:-}
 EPS_CLEANUP=${EPS_CLEANUP:-false}
 EPS_CT_INSTALL=${EPS_CT_INSTALL:-false}
 
-if [ -z "$EPS_BASE_URL" -o -z "$EPS_OS_DISTRO" -o -z "$EPS_UTILS" -o -z "$EPS_APP_CONFIG" ]; then
+if [ -z "$EPS_BASE_URL" -o -z "$EPS_OS_DISTRO" -o -z "$EPS_UTILS_COMMON" -o -z "$EPS_UTILS_DISTRO" -o -z "$EPS_APP_CONFIG" ]; then
   printf "Script looded incorrectly!\n\n";
   exit 1;
 fi
 
-source <(echo -n "$EPS_UTILS")
+source <(echo -n "$EPS_UTILS_COMMON")
+source <(echo -n "$EPS_UTILS_DISTRO")
 source <(echo -n "$EPS_APP_CONFIG")
-if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-  source <(wget --no-cache -qO- ${EPS_BASE_URL}/utils/alpine.sh)
-else
-  source <(wget --no-cache -qO- ${EPS_BASE_URL}/utils/debian.sh)
-fi
 
 pms_bootstrap
 pms_settraps

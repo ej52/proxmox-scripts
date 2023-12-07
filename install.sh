@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-export EPS_BASE_URL=https://raw.githubusercontent.com/ej52/proxmox-scripts/main
+export EPS_BASE_URL=${EPS_BASE_URL:-https://raw.githubusercontent.com/ej52/proxmox-scripts/main}
 export EPS_CT_INSTALL=false
 
 CLR_RD="\033[0;31m"
@@ -54,6 +54,12 @@ if [ "$EPS_OS_DISTRO" = "alpine" ]; then
   [ "$(command -v bash)" ] || apk add bash >/dev/null
 fi
 
-export EPS_UTILS=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
+_utilDistro=$EPS_OS_DISTRO
+if [ "$EPS_OS_DISTRO" = "ubuntu" ]; then
+  _utilDistro="debian"
+fi
+
+export EPS_UTILS_COMMON=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
+export EPS_UTILS_DISTRO=$(wget --no-cache -qO- $EPS_BASE_URL/utils/${_utilDistro}.sh)
 bash -c "$EPS_APP_INSTALL"
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-export EPS_BASE_URL=https://raw.githubusercontent.com/ej52/proxmox-scripts/main
+export EPS_BASE_URL=${EPS_BASE_URL:-https://raw.githubusercontent.com/ej52/proxmox-scripts/main}
 export EPS_CT_INSTALL=true
 
-export EPS_UTILS=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
-source <(echo -n "$EPS_UTILS")
+export EPS_UTILS_COMMON=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
+source <(echo -n "$EPS_UTILS_COMMON")
 pms_bootstrap
 pms_settraps
 
@@ -190,4 +190,11 @@ step_start "LXC container" "Creating" "Created"
   step_end "LXC container ${CLR_CYB}$EPS_CT_ID${CLR_GN} created successfully"
 
 trap - ERR
+
+_utilDistro=$EPS_OS_DISTRO
+if [ "$EPS_OS_DISTRO" = "ubuntu" ]; then
+  _utilDistro="debian"
+fi
+
+export EPS_UTILS_DISTRO=$(wget --no-cache -qO- $EPS_BASE_URL/utils/${_utilDistro}.sh)
 lxc-attach -n $EPS_CT_ID -- bash -c "$EPS_APP_INSTALL"
