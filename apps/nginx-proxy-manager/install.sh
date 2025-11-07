@@ -269,7 +269,7 @@ step_start "Enviroment" "Setting up" "Setup"
   # Copy app files
   mkdir -p /app/global /app/frontend/images
   cp -r backend/* /app
-  cp -r global/* /app/global
+  #cp -r global/* /app/global
 
 step_start "Frontend" "Building" "Built"
   cd ./frontend
@@ -278,7 +278,7 @@ step_start "Frontend" "Building" "Built"
   yarn install --silent --network-timeout=30000 >$__OUTPUT 
   yarn build >$__OUTPUT 
   cp -r dist/* /app/frontend
-  cp -r app-images/* /app/frontend/images
+  #cp -r app-images/* /app/frontend/images
 
 step_start "Backend" "Initializing" "Initialized"
   rm -rf /app/config/default.json &>$__OUTPUT
